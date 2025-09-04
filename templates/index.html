@@ -3,31 +3,68 @@
 <head>
   <title>Registro de Visitas</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .tarjeta {
+      border: 1px solid #ccc;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+      background-color: #f9f9f9;
+    }
+    .campo {
+      margin-bottom: 0.5rem;
+    }
+    .campo strong {
+      display: inline-block;
+      width: 140px;
+    }
+    textarea, input[type="date"] {
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+    button {
+      margin-top: 0.5rem;
+    }
+  </style>
 </head>
 <body>
   <h2>Grupo: {{ grupo }}</h2>
-  {% for persona in personas %}
-    <div>
-      <strong>{{ persona['NOMBRE'] }}</strong><br>
-      Dirección: {{ persona['DIRECCIÓN'] }}<br>
-      Teléfono: {{ persona['TELÉFONO'] }}<br>
-      Variante: {{ persona['VARIANTE'] }}<br>
-      Última visita: {{ persona['ACTUALMENTE LA VISITA'] }}<br>
-      <form action="/actualizar" method="post">
-  <input type="hidden" name="id" value="{{ persona['Id'] }}">
-  <input type="hidden" name="grupo" value="{{ grupo }}">
-  
-  <label>Observaciones:</label><br>
-  <textarea name="observacion" rows="6" cols="60">{{ persona['OBSERVACIONES'] }}</textarea><br><br>
 
-  <label>Fecha de visita:</label><br>
-  <input type="date" name="fecha" value="{{ persona['FECHA'] }}"><br><br>
-
-  <button type="submit">Actualizar</button>
-</form>
-      
-    </div>
-    <hr>
-  {% endfor %}
+  {% if personas %}
+    {% for persona in personas %}
+      <div class="tarjeta">
+        <div class="campo"><strong>Nombre:</strong> {{ persona.nombre }}</div>
+        <div class="campo"><strong>Dirección:</strong> {{ persona.direccion }}</div>
+        <div class="campo"><strong>Teléfono:</strong> {{ persona.telefono }}</div>
+        <div class="campo"><strong>Variante:</strong> {{ persona.variante }}</div>
+        <div class="campo"><strong>Última visita:</strong> {{ persona.actualmente_la_visita }}</div>
+        <div class="campo"><strong>Fecha registrada:</strong> {{ persona.fecha }}</div>
+        <div class="campo"><strong>Fecha entregó:</strong> {{ persona.entrego }}</div>
+        <div class="campo">
+          <strong>Ver en Maps:</strong>
+          {% if persona.ver_en_maps %}
+            <a href="{{ persona.ver_en_maps }}" target="_blank">📍 Ver ubicación</a>
+          {% else %}
+            No disponible
+          {% endif %}
+        </div>
+        <form action="/actualizar" method="post">
+          <input type="hidden" name="id" value="{{ persona.id }}">
+          <input type="hidden" name="grupo" value="{{ grupo }}">
+          <div class="campo">
+            <strong>Observaciones:</strong>
+            <textarea name="observacion" rows="3">{{ persona.observaciones }}</textarea>
+          </div>
+          <div class="campo">
+            <strong>Fecha nueva:</strong>
+            <input type="date" name="fecha" value="{{ persona.fecha }}">
+          </div>
+          <button type="submit">Actualizar</button>
+        </form>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No hay registros disponibles para mostrar.</p>
+  {% endif %}
 </body>
 </html>
