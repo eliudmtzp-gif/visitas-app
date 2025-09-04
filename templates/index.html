@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Registro de Visitas</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h2>Grupo: {{ grupo }}</h2>
+  {% for persona in personas %}
+    <div>
+      <strong>{{ persona['NOMBRE'] }}</strong><br>
+      Dirección: {{ persona['DIRECCIÓN'] }}<br>
+      Teléfono: {{ persona['TELÉFONO'] }}<br>
+      Variante: {{ persona['VARIANTE'] }}<br>
+      Última visita: {{ persona['ACTUALMENTE LA VISITA'] }}<br>
+      <form action="/actualizar" method="post">
+  <input type="hidden" name="id" value="{{ persona['Id'] }}">
+  <input type="hidden" name="grupo" value="{{ grupo }}">
+  
+  <label>Observaciones:</label><br>
+  <textarea name="observacion" rows="6" cols="60">{{ persona['OBSERVACIONES'] }}</textarea><br><br>
+
+  <label>Fecha de visita:</label><br>
+  <input type="date" name="fecha" value="{{ persona['FECHA'] }}"><br><br>
+
+  <button type="submit">Actualizar</button>
+</form>
+      
+    </div>
+    <hr>
+  {% endfor %}
+</body>
+</html>
