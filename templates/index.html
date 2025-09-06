@@ -4,44 +4,57 @@
   <title>Registro de Visitas</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
-  .tarjeta {
-    border: 1px solid #ccc;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border-radius: 6px;
-    background-color: #f9f9f9;
-  }
-  .campo {
-    margin-bottom: 0.5rem;
-  }
-  .campo strong {
-    display: inline-block;
-    width: 140px;
-  }
-  textarea {
-    width: 100%;
-    resize: vertical;
-    height: 100px; /* ← Más grande */
-  }
-  input[type="date"] {
-    width: 100%;
-    margin-top: 0.5rem;
-  }
-  button {
-    margin-top: 0.5rem;
-  }
-</style>
+    .tarjeta {
+      border: 1px solid #ccc;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+      background-color: #f9f9f9;
+    }
+    .campo {
+      margin-bottom: 0.5rem;
+    }
+    .campo strong {
+      display: inline-block;
+      width: 140px;
+    }
+    textarea {
+      width: 100%;
+      resize: vertical;
+      height: 100px;
+    }
+    input[type="date"] {
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+    button {
+      margin-top: 0.5rem;
+    }
+    input.fecha-vacia {
+      border: 2px solid #d00;
+      background-color: #ffecec;
+    }
+  </style>
+</head>
+<body>
 
 <h2>Grupo: {{ grupo }}</h2>
 
+{% set mensaje = request.args.get('mensaje') %}
+{% if mensaje %}
+  <div style="background-color:{{ 'ffe0e0' if '⚠️' in mensaje else '#e0ffe0' }}; padding:0.5rem; border:1px solid {{ '#a00' if '⚠️' in mensaje else '#0a0' }}; margin-bottom:1rem;">
+    {{ mensaje }}
+  </div>
+{% endif %}
+
 {% if personas %}
   {% for persona in personas %}
-    <div class="tarjeta">
+    <div class="tarjeta {% if request.args.get('resaltado') == persona.identificador %}resaltada{% endif %}">
       <div class="campo"><strong>Nombre:</strong> {{ persona.nombre }}</div>
       <div class="campo"><strong>Dirección:</strong> {{ persona.direccion }}</div>
       <div class="campo"><strong>Teléfono:</strong> {{ persona.telefono }}</div>
       <div class="campo"><strong>Variante:</strong> {{ persona.variante }}</div>
-      <div class="campo"><strong>Actualmente visita:</strong> {{ persona.actualmente_la_visita }}</div> <!-- ← Etiqueta corregida -->
+      <div class="campo"><strong>Actualmente visita:</strong> {{ persona.actualmente_la_visita }}</div>
       <div class="campo"><strong>Fecha registrada:</strong> {{ persona.fecha }}</div>
       <div class="campo"><strong>Fecha entregó:</strong> {{ persona.entrego }}</div>
       <div class="campo">
@@ -60,7 +73,7 @@
           <textarea name="observacion">{{ persona.observaciones }}</textarea>
         </div>
         <div class="campo">
-          <strong>Fecha de actualización:</strong> <!-- ← Etiqueta corregida -->
+          <strong>Fecha de actualización:</strong>
           <input type="date" name="fecha" value="{{ persona.fecha }}">
         </div>
         <button type="submit">Actualizar</button>
@@ -70,5 +83,28 @@
 {% else %}
   <p>No hay registros disponibles para mostrar.</p>
 {% endif %}
+
+<script>
+  // Oculta el mensaje después de 5 segundos
+  setTimeout(() => {
+    const mensaje = document.querySelector('div[style*="background-color"]');
+    if (mensaje) mensaje.style.display = 'none';
+  }, 5000);
+
+  // Validación de fecha antes de enviar
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      const fechaInput = form.querySelector('input[name="fecha"]');
+      if (!fechaInput.value) {
+        e.preventDefault();
+        fechaInput.classList.add('fecha-vacia');
+        alert("⚠️ Por favor, selecciona una fecha antes de actualizar.");
+      } else {
+        fechaInput.classList.remove('fecha-vacia');
+      }
+    });
+  });
+</script>
+
 </body>
 </html>

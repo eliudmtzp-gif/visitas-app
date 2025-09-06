@@ -50,9 +50,9 @@ def cargar_db(grupo):
     conn.close()
 
     columnas = [
-        "id", "nombre", "direccion", "telefono",
-        "variante", "entrego", "actualmente_la_visita",
-        "observaciones", "fecha", "ver_en_maps"
+    "identificador", "nombre", "direccion", "telefono",
+    "variante", "entrego", "actualmente_la_visita",
+    "observaciones", "fecha", "ver_en_maps"
     ]
     return [dict(zip(columnas, row)) for row in rows]
 
@@ -70,6 +70,11 @@ def actualizar():
     nueva_fecha = request.form['fecha']
     grupo = request.form['grupo']
 
+    # Validación: si no hay fecha, no actualices
+    if not nueva_fecha:
+        mensaje = f"⚠️ Por favor, agrega una fecha antes de actualizar el registro {identificador}"
+        return redirect(f"/?grupo={grupo}&mensaje={mensaje}&resaltado={identificador}")
+
     conn = get_connection()
     cur = conn.cursor()
     cur.execute("""
@@ -78,11 +83,17 @@ def actualizar():
             fecha = %s
         WHERE identificador = %s;
     """, (nueva_obs, nueva_fecha, identificador))
+    filas_afectadas = cur.rowcount
     conn.commit()
     cur.close()
     conn.close()
 
-    return redirect(f"/?grupo={grupo}")
+    if filas_afectadas > 0:
+        mensaje = f"✅ Registro {identificador} actualizado correctamente"
+    else:
+        mensaje = f"⚠️ No se encontró el registro {identificador}"
+
+    return redirect(f"/?grupo={grupo}&mensaje={mensaje}&resaltado={identificador}")
 
 if __name__ == '__main__':
     crear_tabla_si_no_existe()
