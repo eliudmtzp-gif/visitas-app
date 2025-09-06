@@ -65,7 +65,7 @@ def index():
 
 @app.route('/actualizar', methods=['POST'])
 def actualizar():
-    id_persona = int(request.form['id'])
+    identificador = request.form['identificador']
     nueva_obs = request.form['observacion']
     nueva_fecha = request.form['fecha']
     grupo = request.form['grupo']
@@ -76,8 +76,8 @@ def actualizar():
         UPDATE visitas
         SET observaciones = %s,
             fecha = %s
-        WHERE id = %s;
-    """, (nueva_obs, nueva_fecha, id_persona))
+        WHERE identificador = %s;
+    """, (nueva_obs, nueva_fecha, identificador))
     conn.commit()
     cur.close()
     conn.close()
