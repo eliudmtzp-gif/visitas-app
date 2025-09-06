@@ -42,8 +42,9 @@ def cargar_db(grupo):
         SELECT identificador, nombre, direccion, telefono,
                variante, entrego, actualmente_la_visita,
                observaciones, fecha, ver_en_maps
-        FROM visitas;
-    """)
+        FROM visitas
+        WHERE LEFT(identificador, 2) = %s;
+    """, (grupo,))
     rows = cur.fetchall()
     cur.close()
     conn.close()
