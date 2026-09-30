@@ -1,147 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <title>Registro de Visitas</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <style>
-    .tarjeta {
-      border: 1px solid #ccc;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      border-radius: 6px;
-      background-color: #f9f9f9;
-    }
-    .campo {
-      margin-bottom: 0.75rem;
-    }
-    .campo strong {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 1rem;
-    }
-    textarea {
-      width: 100%;
-      resize: vertical;
-      min-height: 210px;
-      font-size: 1.85rem !important;
-      line-height: 1.4;
-      padding: 10px;
-      box-sizing: border-box;
-      overflow: hidden;
-      transition: height 0.2s ease;
-    }
-    input[type="date"] {
-      width: 100%;
-      margin-top: 0.5rem;
-      font-size: 1rem;
-      padding: 8px;
-      box-sizing: border-box;
-    }
-    button {
-      margin-top: 0.5rem;
-      font-size: 1rem;
-      padding: 10px 14px;
-    }
-    input.fecha-vacia {
-      border: 2px solid #d00;
-      background-color: #ffecec;
-    }
-
-    /* Responsivo para móviles */
-    @media (max-width: 600px) {
-      body {
-        padding: 10px;
-        font-size: 1rem;
-      }
-      .campo strong,
-      textarea,
-      input,
-      button {
-        font-size: 1.05rem;
-      }
-      textarea {
-        min-height: 180px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Registro de Visitas - Grupo {{ grupo }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+        h1 { color: #333; margin: 0; }
+        .mensaje { margin: 15px 0; padding: 10px; border-radius: 5px; font-weight: bold; }
+        .mensaje.exito { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .mensaje.advertencia { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; }
+        .ficha { background: #fff; border: 1px solid #ccc; border-radius: 6px; padding: 15px; margin-bottom: 20px; }
+        .campo { margin: 5px 0; }
+        .campo strong { display: inline-block; width: 180px; color: #444; }
+        textarea, input[type="text"], input[type="date"] { width: 100%; padding: 6px; margin: 5px 0; }
+        button { padding: 6px 12px; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { opacity: 0.9; }
+        .highlight { border: 2px solid #ffcc00; }
+        .nuevo { background: #e9ecef; padding: 15px; border-radius: 6px; margin-bottom: 20px; }
+        .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+        .btn-admin { background:#28a745; }
+        .btn-logout { background:#dc3545; }
+        .btn-update { background:#007bff; } /* Azul para actualizar */
+    </style>
 </head>
 <body>
-
-<h2>Grupo: {{ grupo }}</h2>
-
-{% set mensaje = request.args.get('mensaje') %}
-{% if mensaje %}
-  <div style="background-color:{{ 'ffe0e0' if '⚠️' in mensaje else '#e0ffe0' }}; padding:0.5rem; border:1px solid {{ '#a00' if '⚠️' in mensaje else '#0a0' }}; margin-bottom:1rem;">
-    {{ mensaje }}
-  </div>
-{% endif %}
-
-{% if personas %}
-  {% for persona in personas %}
-    <div class="tarjeta {% if request.args.get('resaltado') == persona.identificador %}resaltada{% endif %}">
-      <div class="campo"><strong>Nombre:</strong> {{ persona.nombre }}</div>
-      <div class="campo"><strong>Dirección:</strong> {{ persona.direccion }}</div>
-      <div class="campo"><strong>Teléfono:</strong> {{ persona.telefono }}</div>
-      <div class="campo"><strong>Variante:</strong> {{ persona.variante }}</div>
-      <div class="campo"><strong>Actualmente visita:</strong> {{ persona.actualmente_la_visita }}</div>
-      <div class="campo"><strong>Fecha registrada:</strong> {{ persona.fecha }}</div>
-      <div class="campo"><strong>Fecha entregó:</strong> {{ persona.entrego }}</div>
-      <div class="campo">
-        <strong>Ver en Maps:</strong>
-        {% if persona.ver_en_maps %}
-          <a href="{{ persona.ver_en_maps }}" target="_blank">📍 Ver ubicación</a>
+    <div class="header">
+        <h1>Registro de Visitas - Grupo {{ grupo }}</h1>
+        {% if rol == 'visitante' %}
+            <a href="/login"><button class="btn-admin">Ingresar como administrador</button></a>
         {% else %}
-          No disponible
+            <a href="/logout"><button class="btn-logout">Salir de administrador</button></a>
         {% endif %}
-      </div>
-      <form action="/actualizar" method="post">
-        <input type="hidden" name="identificador" value="{{ persona.identificador }}">
-        <input type="hidden" name="grupo" value="{{ grupo }}">
-        <div class="campo">
-          <strong>Observaciones:</strong>
-          <textarea name="observacion"
-            oninput="this.style.height=''; this.style.height=this.scrollHeight + 'px';">{{ persona.observaciones.strip() }}</textarea>
-        </div>
-        <div class="campo">
-          <strong>Fecha de actualización:</strong>
-          <input type="date" name="fecha" value="{{ persona.fecha }}">
-        </div>
-        <button type="submit">Actualizar</button>
-      </form>
     </div>
-  {% endfor %}
-{% else %}
-  <p>No hay registros disponibles para mostrar.</p>
-{% endif %}
 
-<script>
-  // Oculta el mensaje después de 5 segundos
-  setTimeout(() => {
-    const mensaje = document.querySelector('div[style*="background-color"]');
-    if (mensaje) mensaje.style.display = 'none';
-  }, 5000);
+    {% with mensajes = get_flashed_messages() %}
+      {% if mensajes %}
+        {% for m in mensajes %}
+          {% if "✅" in m %}
+            <div class="mensaje exito">{{ m }}</div>
+          {% else %}
+            <div class="mensaje advertencia">{{ m }}</div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
-  // Validación de fecha antes de enviar
-  document.querySelectorAll('form').forEach(form => {
-    form.addEventListener('submit', function(e) {
-      const fechaInput = form.querySelector('input[name="fecha"]');
-      if (!fechaInput.value) {
-        e.preventDefault();
-        fechaInput.classList.add('fecha-vacia');
-        alert("⚠️ Por favor, selecciona una fecha antes de actualizar.");
-      } else {
-        fechaInput.classList.remove('fecha-vacia');
-      }
-    });
-  });
+    {% for persona in personas %}
+    <div class="ficha {% if resaltado == persona.identificador %}highlight{% endif %}">
+        <div class="campo"><strong>Identificador:</strong> {{ persona.identificador }}</div>
+        <div class="campo"><strong>Nombre:</strong> {{ persona.nombre }}</div>
+        <div class="campo"><strong>Dirección:</strong> {{ persona.direccion }}</div>
+        <div class="campo"><strong>Teléfono:</strong> {{ persona.telefono or 'No disponible' }}</div>
+        <div class="campo"><strong>Variante:</strong> {{ persona.variante }}</div>
+        <div class="campo"><strong>Actualmente visita:</strong> {{ persona.actualmente_la_visita }}</div>
+        <div class="campo"><strong>Fecha registrada:</strong> {{ persona.fecha or 'No disponible' }}</div>
+        <div class="campo"><strong>Fecha entregó:</strong> {{ persona.entrego or 'No disponible' }}</div>
+        <div class="campo"><strong>Ver en Maps:</strong>
+            {% if persona.ver_en_maps %}
+                <a href="{{ persona.ver_en_maps }}" target="_blank">Presione aquí</a>
+            {% else %}
+                No disponible
+            {% endif %}
+        </div>
+        <div class="campo"><strong>Observaciones:</strong><br>{{ persona.observaciones }}</div>
 
-  // Ajusta automáticamente la altura y estilo de los textareas al cargar
-  document.querySelectorAll('textarea').forEach(textarea => {
-    textarea.style.height = '';
-    textarea.style.height = textarea.scrollHeight + 'px';
-    textarea.style.fontSize = '1.85rem';
-  });
-</script>
-
+        {% if rol == 'admin' %}
+        <!-- Formulario completo para administrador -->
+        <form action="/editar" method="POST">
+            <input type="hidden" name="identificador" value="{{ persona.identificador }}">
+            <input type="hidden" name="grupo" value="{{ grupo }}">
+            <div class="campo"><strong>Nombre:</strong><input type="text" name="nombre" value="{{ persona.nombre }}"></div>
+            <div class="campo"><strong>Dirección:</strong><input type="text" name="direccion" value="{{ persona.direccion }}"></div>
+            <div class="campo"><strong>Teléfono:</strong><input type="text" name="telefono" value="{{ persona.telefono }}"></div>
+            <div class="campo"><strong>Variante:</strong><input type="text" name="variante" value="{{ persona.variante }}"></div>
+            <div class="campo"><strong>Actualmente visita:</strong><input type="text" name="actualmente_la_visita" value="{{ persona.actualmente_la_visita }}"></div>
+            <div class="campo"><strong>Fecha:</strong><input type="date" name="fecha" value="{{ persona.fecha }}"></div>
+            <div class="campo"><strong>Observaciones:</strong><textarea name="observacion" rows="4">{{ persona.observaciones }}</textarea></div>
+            <div class="campo"><strong>Ver en Maps:</strong><input type="text" name="ver_en_maps" value="{{ persona.ver_en_maps }}"></div>
+            <button type="submit" class="btn-update">Guardar cambios</button>
+        </form>
+        {% else %}
+        <!-- Formulario limitado para visitante -->
+        <form action="/actualizar" method="POST">
+            <input type="hidden" name="identificador" value="{{ persona.identificador }}">
+            <input type="hidden" name="grupo" value="{{ grupo }}">
+            <div class="campo"><strong>Fecha de actualización:</strong>
+                <input type="date" name="fecha">
+            </div>
+            <div class="campo"><strong>Nueva observación:</strong>
+                <textarea name="observacion" rows="4" placeholder="Escribe aquí..."></textarea>
+            </div>
+            <button type="submit" class="btn-update">Actualizar</button>
+        </form>
+        {% endif %}
+    </div>
+    {% endfor %}
 </body>
 </html>
