@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Registro de Visitas - Grupo {{ grupo }}</title>
-    <!-- Ajuste de viewport para que se vea más grande -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.2">
+    <!-- Ajuste de viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         html, body {
-            font-size: 18px;   /* tamaño base más grande */
-            line-height: 1.4;  /* mejor legibilidad */
+            font-size: 16px;   /* tamaño base normal */
+            line-height: 1.4;
             font-family: Arial, sans-serif;
             margin: 20px;
             background: #f9f9f9;
@@ -17,7 +17,7 @@
         .mensaje { margin: 15px 0; padding: 10px; border-radius: 5px; font-weight: bold; }
         .mensaje.exito { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
         .mensaje.advertencia { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; }
-        .ficha { background: #fff; border: 1px solid #ccc; border-radius: 6px; padding: 15px; margin-bottom: 20px; font-size: 1.05rem; }
+        .ficha { background: #fff; border: 1px solid #ccc; border-radius: 6px; padding: 15px; margin-bottom: 20px; font-size: 1rem; }
         .campo { margin: 5px 0; }
         .campo strong { display: inline-block; width: 180px; color: #444; }
         textarea, input[type="text"], input[type="date"] { width: 100%; padding: 8px; margin: 5px 0; font-size: 1rem; }
@@ -29,6 +29,19 @@
         .btn-admin { background:#28a745; }
         .btn-logout { background:#dc3545; }
         .btn-update { background:#007bff; } /* Azul para actualizar */
+
+        /* Ajustes adaptativos */
+        @media (min-width: 1024px) {
+            html, body { font-size: 18px; }
+            .ficha { font-size: 1.1rem; }
+        }
+        @media (min-width: 768px) and (max-width: 1023px) {
+            html, body { font-size: 17px; }
+        }
+        @media (max-width: 767px) {
+            html, body { font-size: 15px; }
+            .ficha { font-size: 1rem; }
+        }
     </style>
 </head>
 <body>
