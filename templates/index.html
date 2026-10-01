@@ -1,120 +1,741 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+
     <title>Registro de Visitas - Grupo {{ grupo }}</title>
-    <!-- Ajuste de viewport -->
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         html, body {
-            font-size: 16px;   /* tamaño base normal */
+            font-size: 16px;
             line-height: 1.4;
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 20px;
             background: #f9f9f9;
+            color: #333;
         }
-        h1 { color: #333; margin: 0; }
-        .mensaje { margin: 15px 0; padding: 10px; border-radius: 5px; font-weight: bold; }
-        .mensaje.exito { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
-        .mensaje.advertencia { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; }
-        .ficha { background: #fff; border: 1px solid #ccc; border-radius: 6px; padding: 15px; margin-bottom: 20px; font-size: 1rem; }
-        .campo { margin: 5px 0; }
-        .campo strong { display: inline-block; width: 180px; color: #444; }
-        textarea, input[type="text"], input[type="date"] { width: 100%; padding: 8px; margin: 5px 0; font-size: 1rem; }
-        button { padding: 8px 14px; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; }
-        button:hover { opacity: 0.9; }
-        .highlight { border: 2px solid #ffcc00; }
-        .nuevo { background: #e9ecef; padding: 15px; border-radius: 6px; margin-bottom: 20px; }
-        .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
-        .btn-admin { background:#28a745; }
-        .btn-logout { background:#dc3545; }
-        .btn-update { background:#007bff; } /* Azul para actualizar */
 
-        /* Ajustes adaptativos */
+        body {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #333;
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .mensaje {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .mensaje.exito {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .mensaje.advertencia {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+        }
+
+        .ficha {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .campo {
+            margin: 8px 0;
+        }
+
+        .campo strong {
+            display: inline-block;
+            width: 180px;
+            color: #444;
+            vertical-align: top;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            max-width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            font-size: 1rem;
+            font-family: Arial, sans-serif;
+            border: 1px solid #bbb;
+            border-radius: 4px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+
+        button {
+            padding: 8px 14px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .highlight {
+            border: 2px solid #ffcc00;
+            background: #fffdf0;
+        }
+
+        .nuevo {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            flex: 1;
+        }
+
+        .btn-admin {
+            background: #28a745;
+        }
+
+        .btn-logout {
+            background: #dc3545;
+        }
+
+        .btn-update {
+            background: #007bff;
+        }
+
+        .toggle-btn {
+            background: #007bff;
+            margin-bottom: 15px;
+        }
+
+        .formulario-admin {
+            border-top: 1px solid #ddd;
+            margin-top: 15px;
+            padding-top: 10px;
+        }
+
+        .formulario-visitante {
+            border-top: 1px solid #ddd;
+            margin-top: 15px;
+            padding-top: 10px;
+        }
+
+        a {
+            color: #0056b3;
+        }
+
+        a:hover {
+            color: #003d80;
+        }
+
+        .sin-registros {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+        }
+
+        /* Escritorio */
         @media (min-width: 1024px) {
-            html, body { font-size: 18px; }
-            .ficha { font-size: 1.1rem; }
+            html, body {
+                font-size: 18px;
+            }
+
+            .ficha {
+                font-size: 1.1rem;
+            }
         }
+
+        /* Tablet */
         @media (min-width: 768px) and (max-width: 1023px) {
-            html, body { font-size: 17px; }
+            html, body {
+                font-size: 17px;
+            }
         }
+
+        /* Teléfonos */
         @media (max-width: 767px) {
-            html, body { font-size: 15px; }
-            .ficha { font-size: 1rem; }
+            html, body {
+                font-size: 15px;
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.4rem;
+            }
+
+            .ficha {
+                font-size: 1rem;
+                padding: 12px;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .header h1 {
+                margin-bottom: 5px;
+            }
+
+            .header a,
+            .header button {
+                width: 100%;
+            }
+
+            .campo strong {
+                display: block;
+                width: auto;
+                margin-bottom: 2px;
+            }
+
+            button {
+                width: 100%;
+                padding: 10px;
+            }
+
+            .toggle-btn {
+                width: 100%;
+            }
         }
     </style>
+
+    <script>
+        function toggleNuevo() {
+            const formDiv = document.getElementById("nuevoRegistro");
+
+            if (!formDiv) {
+                return;
+            }
+
+            if (formDiv.style.display === "none" || formDiv.style.display === "") {
+                formDiv.style.display = "block";
+
+                window.scrollTo({
+                    top: formDiv.offsetTop - 10,
+                    behavior: "smooth"
+                });
+            } else {
+                formDiv.style.display = "none";
+            }
+        }
+    </script>
 </head>
+
 <body>
+
+    <!-- ENCABEZADO -->
     <div class="header">
-        <h1>Registro de Visitas - Grupo {{ grupo }}</h1>
+
+        <h1>
+            Registro de Visitas - Grupo {{ grupo }}
+        </h1>
+
         {% if rol == 'visitante' %}
-            <a href="/login"><button class="btn-admin">Ingresar como administrador</button></a>
+
+            <a href="/login">
+                <button type="button" class="btn-admin">
+                    Ingresar como administrador
+                </button>
+            </a>
+
         {% else %}
-            <a href="/logout"><button class="btn-logout">Salir de administrador</button></a>
+
+            <a href="/logout">
+                <button type="button" class="btn-logout">
+                    Salir de administrador
+                </button>
+            </a>
+
         {% endif %}
+
     </div>
 
+
+    <!-- MENSAJES DE FLASK -->
     {% with mensajes = get_flashed_messages() %}
-      {% if mensajes %}
-        {% for m in mensajes %}
-          {% if "✅" in m %}
-            <div class="mensaje exito">{{ m }}</div>
-          {% else %}
-            <div class="mensaje advertencia">{{ m }}</div>
-          {% endif %}
-        {% endfor %}
-      {% endif %}
+
+        {% if mensajes %}
+
+            {% for m in mensajes %}
+
+                {% if "✅" in m %}
+
+                    <div class="mensaje exito">
+                        {{ m }}
+                    </div>
+
+                {% else %}
+
+                    <div class="mensaje advertencia">
+                        {{ m }}
+                    </div>
+
+                {% endif %}
+
+            {% endfor %}
+
+        {% endif %}
+
     {% endwith %}
 
-    {% for persona in personas %}
-    <div class="ficha {% if resaltado == persona.identificador %}highlight{% endif %}">
-        <div class="campo"><strong>Identificador:</strong> {{ persona.identificador }}</div>
-        <div class="campo"><strong>Nombre:</strong> {{ persona.nombre }}</div>
-        <div class="campo"><strong>Dirección:</strong> {{ persona.direccion }}</div>
-        <div class="campo"><strong>Teléfono:</strong> {{ persona.telefono or 'No disponible' }}</div>
-        <div class="campo"><strong>Variante:</strong> {{ persona.variante }}</div>
-        <div class="campo"><strong>Actualmente visita:</strong> {{ persona.actualmente_la_visita }}</div>
-        <div class="campo"><strong>Fecha registrada:</strong> {{ persona.fecha or 'No disponible' }}</div>
-        <div class="campo"><strong>Fecha entregó:</strong> {{ persona.entrego or 'No disponible' }}</div>
-        <div class="campo"><strong>Ver en Maps:</strong>
-            {% if persona.ver_en_maps %}
-                <a href="{{ persona.ver_en_maps }}" target="_blank">Presione aquí</a>
-            {% else %}
-                No disponible
-            {% endif %}
-        </div>
-        <div class="campo"><strong>Observaciones:</strong><br>{{ persona.observaciones }}</div>
 
-        {% if rol == 'admin' %}
-        <!-- Formulario completo para administrador -->
-        <form action="/editar" method="POST">
-            <input type="hidden" name="identificador" value="{{ persona.identificador }}">
-            <input type="hidden" name="grupo" value="{{ grupo }}">
-            <div class="campo"><strong>Nombre:</strong><input type="text" name="nombre" value="{{ persona.nombre }}"></div>
-            <div class="campo"><strong>Dirección:</strong><input type="text" name="direccion" value="{{ persona.direccion }}"></div>
-            <div class="campo"><strong>Teléfono:</strong><input type="text" name="telefono" value="{{ persona.telefono }}"></div>
-            <div class="campo"><strong>Variante:</strong><input type="text" name="variante" value="{{ persona.variante }}"></div>
-            <div class="campo"><strong>Actualmente visita:</strong><input type="text" name="actualmente_la_visita" value="{{ persona.actualmente_la_visita }}"></div>
-            <div class="campo"><strong>Fecha:</strong><input type="date" name="fecha" value="{{ persona.fecha }}"></div>
-            <div class="campo"><strong>Observaciones:</strong><textarea name="observacion" rows="4">{{ persona.observaciones }}</textarea></div>
-            <div class="campo"><strong>Ver en Maps:</strong><input type="text" name="ver_en_maps" value="{{ persona.ver_en_maps }}"></div>
-            <button type="submit" class="btn-update">Guardar cambios</button>
-        </form>
-        {% else %}
-        <!-- Formulario limitado para visitante -->
-        <form action="/actualizar" method="POST">
-            <input type="hidden" name="identificador" value="{{ persona.identificador }}">
-            <input type="hidden" name="grupo" value="{{ grupo }}">
-            <div class="campo"><strong>Fecha de actualización:</strong>
-                <input type="date" name="fecha">
+    <!-- BOTÓN PARA AGREGAR NUEVO REGISTRO -->
+    <button
+        type="button"
+        class="toggle-btn"
+        onclick="toggleNuevo()">
+
+        ➕ Agregar nuevo registro
+
+    </button>
+
+
+    <!-- FORMULARIO PARA NUEVO REGISTRO -->
+    <div id="nuevoRegistro" class="nuevo">
+
+        <h2>Agregar nuevo registro</h2>
+
+        <form action="/nuevo" method="POST">
+
+            <input
+                type="hidden"
+                name="grupo"
+                value="{{ grupo }}">
+
+            <div class="campo">
+                <strong>Identificador:</strong>
+
+                <input
+                    type="text"
+                    name="identificador"
+                    required
+                    autocomplete="off">
             </div>
-            <div class="campo"><strong>Nueva observación:</strong>
-                <textarea name="observacion" rows="4" placeholder="Escribe aquí..."></textarea>
+
+
+            <div class="campo">
+                <strong>Nombre:</strong>
+
+                <input
+                    type="text"
+                    name="nombre"
+                    required>
             </div>
-            <button type="submit" class="btn-update">Actualizar</button>
+
+
+            <div class="campo">
+                <strong>Dirección:</strong>
+
+                <input
+                    type="text"
+                    name="direccion">
+            </div>
+
+
+            <div class="campo">
+                <strong>Teléfono:</strong>
+
+                <input
+                    type="text"
+                    name="telefono"
+                    inputmode="tel">
+            </div>
+
+
+            <div class="campo">
+                <strong>Variante:</strong>
+
+                <input
+                    type="text"
+                    name="variante">
+            </div>
+
+
+            <div class="campo">
+                <strong>Actualmente visita:</strong>
+
+                <input
+                    type="text"
+                    name="actualmente_la_visita">
+            </div>
+
+
+            <div class="campo">
+                <strong>Fecha:</strong>
+
+                <input
+                    type="date"
+                    name="fecha">
+            </div>
+
+
+            <div class="campo">
+                <strong>Observaciones:</strong>
+
+                <textarea
+                    name="observaciones"
+                    rows="3"></textarea>
+            </div>
+
+
+            <div class="campo">
+                <strong>Ver en Maps:</strong>
+
+                <input
+                    type="text"
+                    name="ver_en_maps"
+                    placeholder="https://maps.google.com/...">
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn-update">
+
+                Agregar
+
+            </button>
+
         </form>
-        {% endif %}
+
     </div>
-    {% endfor %}
+
+
+    <!-- LISTA DE PERSONAS -->
+
+    {% if personas %}
+
+        {% for persona in personas %}
+
+            <div
+                class="ficha {% if resaltado == persona.identificador %}highlight{% endif %}">
+
+                <!-- DATOS DEL REGISTRO -->
+
+                <div class="campo">
+                    <strong>Identificador:</strong>
+                    {{ persona.identificador }}
+                </div>
+
+
+                <div class="campo">
+                    <strong>Nombre:</strong>
+                    {{ persona.nombre }}
+                </div>
+
+
+                <div class="campo">
+                    <strong>Dirección:</strong>
+                    {{ persona.direccion or 'No disponible' }}
+                </div>
+
+
+                <div class="campo">
+                    <strong>Teléfono:</strong>
+                    {{ persona.telefono or 'No disponible' }}
+                </div>
+
+
+                <div class="campo">
+                    <strong>Variante:</strong>
+                    {{ persona.variante or 'No disponible' }}
+                </div>
+
+
+                <div class="campo">
+                    <strong>Actualmente visita:</strong>
+                    {{ persona.actualmente_la_visita or 'No disponible' }}
+                </div>
+
+
+                <div class="campo">
+                    <strong>Fecha registrada:</strong>
+                    {{ persona.fecha or 'No disponible' }}
+                </div>
+
+
+                <div class="campo">
+                    <strong>Fecha entregó:</strong>
+                    {{ persona.entrego or 'No disponible' }}
+                </div>
+
+
+                <div class="campo">
+
+                    <strong>Ver en Maps:</strong>
+
+                    {% if persona.ver_en_maps %}
+
+                        <a
+                            href="{{ persona.ver_en_maps }}"
+                            target="_blank"
+                            rel="noopener noreferrer">
+
+                            Presione aquí
+
+                        </a>
+
+                    {% else %}
+
+                        No disponible
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="campo">
+
+                    <strong>Observaciones:</strong>
+
+                    <br>
+
+                    {{ persona.observaciones or 'Sin observaciones' }}
+
+                </div>
+
+
+                <!-- ============================== -->
+                <!-- FORMULARIO DEL ADMINISTRADOR -->
+                <!-- ============================== -->
+
+                {% if rol == 'admin' %}
+
+                    <form
+                        action="/editar"
+                        method="POST"
+                        class="formulario-admin">
+
+                        <input
+                            type="hidden"
+                            name="identificador"
+                            value="{{ persona.identificador }}">
+
+                        <input
+                            type="hidden"
+                            name="grupo"
+                            value="{{ grupo }}">
+
+
+                        <div class="campo">
+                            <strong>Nombre:</strong>
+
+                            <input
+                                type="text"
+                                name="nombre"
+                                value="{{ persona.nombre or '' }}">
+                        </div>
+
+
+                        <div class="campo">
+                            <strong>Dirección:</strong>
+
+                            <input
+                                type="text"
+                                name="direccion"
+                                value="{{ persona.direccion or '' }}">
+                        </div>
+
+
+                        <div class="campo">
+                            <strong>Teléfono:</strong>
+
+                            <input
+                                type="text"
+                                name="telefono"
+                                value="{{ persona.telefono or '' }}"
+                                inputmode="tel">
+                        </div>
+
+
+                        <div class="campo">
+                            <strong>Variante:</strong>
+
+                            <input
+                                type="text"
+                                name="variante"
+                                value="{{ persona.variante or '' }}">
+                        </div>
+
+
+                        <div class="campo">
+                            <strong>Actualmente visita:</strong>
+
+                            <input
+                                type="text"
+                                name="actualmente_la_visita"
+                                value="{{ persona.actualmente_la_visita or '' }}">
+                        </div>
+
+
+                        <div class="campo">
+                            <strong>Fecha:</strong>
+
+                            <input
+                                type="date"
+                                name="fecha"
+                                value="{{ persona.fecha or '' }}">
+                        </div>
+
+
+                        <div class="campo">
+                            <strong>Observaciones:</strong>
+
+                            <textarea
+                                name="observaciones"
+                                rows="4">{{ persona.observaciones or '' }}</textarea>
+                        </div>
+
+
+                        <div class="campo">
+                            <strong>Ver en Maps:</strong>
+
+                            <input
+                                type="text"
+                                name="ver_en_maps"
+                                value="{{ persona.ver_en_maps or '' }}">
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="btn-update">
+
+                            Guardar cambios
+
+                        </button>
+
+                    </form>
+
+
+                {% else %}
+
+                    <!-- ============================== -->
+                    <!-- FORMULARIO DEL VISITANTE -->
+                    <!-- ============================== -->
+
+                    <form
+                        action="/actualizar"
+                        method="POST"
+                        class="formulario-visitante">
+
+                        <input
+                            type="hidden"
+                            name="identificador"
+                            value="{{ persona.identificador }}">
+
+                        <input
+                            type="hidden"
+                            name="grupo"
+                            value="{{ grupo }}">
+
+
+                        <div class="campo">
+
+                            <strong>Fecha de actualización:</strong>
+
+                            <input
+                                type="date"
+                                name="fecha"
+                                value="{{ persona.fecha or '' }}">
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <strong>Observaciones:</strong>
+
+                            <textarea
+                                name="observaciones"
+                                rows="4"
+                                placeholder="Escriba aquí la información de la visita...">{{ persona.observaciones or '' }}</textarea>
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="btn-update">
+
+                            Actualizar visita
+
+                        </button>
+
+                    </form>
+
+                {% endif %}
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="sin-registros">
+            No hay registros disponibles para este grupo.
+        </div>
+
+    {% endif %}
+
 </body>
 </html>
+
