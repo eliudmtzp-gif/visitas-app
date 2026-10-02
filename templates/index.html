@@ -1,17 +1,23 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
     <meta charset="UTF-8">
 
     <title>Registro de Visitas - Grupo {{ grupo }}</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
 
     <style>
+
         * {
             box-sizing: border-box;
         }
+
 
         html, body {
             font-size: 16px;
@@ -23,10 +29,12 @@
             color: #333;
         }
 
+
         body {
             max-width: 1200px;
             margin: 0 auto;
         }
+
 
         h1 {
             color: #333;
@@ -34,10 +42,12 @@
             font-size: 1.8rem;
         }
 
+
         h2 {
             margin-top: 0;
             color: #333;
         }
+
 
         .mensaje {
             margin: 15px 0;
@@ -46,11 +56,13 @@
             font-weight: bold;
         }
 
+
         .mensaje.exito {
             background: #d4edda;
             border: 1px solid #c3e6cb;
             color: #155724;
         }
+
 
         .mensaje.advertencia {
             background: #fff3cd;
@@ -58,7 +70,9 @@
             color: #856404;
         }
 
+
         .ficha {
+            position: relative;
             background: #fff;
             border: 1px solid #ccc;
             border-radius: 6px;
@@ -68,9 +82,11 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
+
         .campo {
             margin: 8px 0;
         }
+
 
         .campo strong {
             display: inline-block;
@@ -78,6 +94,7 @@
             color: #444;
             vertical-align: top;
         }
+
 
         input[type="text"],
         input[type="date"],
@@ -92,10 +109,12 @@
             border-radius: 4px;
         }
 
+
         textarea {
             resize: vertical;
             min-height: 70px;
         }
+
 
         input:focus,
         textarea:focus {
@@ -103,6 +122,7 @@
             border-color: #007bff;
             box-shadow: 0 0 3px rgba(0, 123, 255, 0.25);
         }
+
 
         button {
             padding: 8px 14px;
@@ -113,18 +133,22 @@
             font-size: 1rem;
         }
 
+
         button:hover {
             opacity: 0.9;
         }
+
 
         button:active {
             transform: translateY(1px);
         }
 
+
         .highlight {
             border: 2px solid #ffcc00;
             background: #fffdf0;
         }
+
 
         .nuevo {
             background: #e9ecef;
@@ -134,6 +158,7 @@
             display: none;
         }
 
+
         .header {
             display: flex;
             justify-content: space-between;
@@ -142,26 +167,32 @@
             margin-bottom: 20px;
         }
 
+
         .header h1 {
             flex: 1;
         }
+
 
         .btn-admin {
             background: #28a745;
         }
 
+
         .btn-logout {
             background: #dc3545;
         }
+
 
         .btn-update {
             background: #007bff;
         }
 
+
         .toggle-btn {
             background: #007bff;
             margin-bottom: 15px;
         }
+
 
         .formulario-admin {
             border-top: 1px solid #ddd;
@@ -169,19 +200,50 @@
             padding-top: 10px;
         }
 
+
         .formulario-visitante {
             border-top: 1px solid #ddd;
             margin-top: 15px;
             padding-top: 10px;
         }
 
+
+        /* =====================================================
+           BOTÓN ELIMINAR
+        ===================================================== */
+
+        .zona-eliminar {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 2;
+        }
+
+
+        .btn-eliminar {
+            background: #dc3545;
+            color: white;
+            padding: 7px 12px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+
+        .btn-eliminar:hover {
+            background: #c82333;
+            opacity: 1;
+        }
+
+
         a {
             color: #0056b3;
         }
 
+
         a:hover {
             color: #003d80;
         }
+
 
         .sin-registros {
             background: #fff;
@@ -192,53 +254,77 @@
             color: #666;
         }
 
-        /* Escritorio */
+
+        /* =====================================================
+           ESCRITORIO
+        ===================================================== */
+
         @media (min-width: 1024px) {
+
             html, body {
                 font-size: 18px;
             }
 
+
             .ficha {
                 font-size: 1.1rem;
             }
+
         }
 
-        /* Tablet */
+
+        /* =====================================================
+           TABLET
+        ===================================================== */
+
         @media (min-width: 768px) and (max-width: 1023px) {
+
             html, body {
                 font-size: 17px;
             }
+
         }
 
-        /* Teléfonos */
+
+        /* =====================================================
+           TELÉFONOS
+        ===================================================== */
+
         @media (max-width: 767px) {
+
             html, body {
                 font-size: 15px;
                 padding: 10px;
             }
 
+
             h1 {
                 font-size: 1.4rem;
             }
+
 
             .ficha {
                 font-size: 1rem;
                 padding: 12px;
             }
 
+
             .header {
                 flex-direction: column;
                 align-items: stretch;
             }
 
+
             .header h1 {
                 margin-bottom: 5px;
             }
+
 
             .header a,
             .header button {
                 width: 100%;
             }
+
 
             .campo strong {
                 display: block;
@@ -246,62 +332,110 @@
                 margin-bottom: 2px;
             }
 
+
             button {
                 width: 100%;
                 padding: 10px;
             }
 
+
             .toggle-btn {
                 width: 100%;
             }
+
+
+            .btn-eliminar {
+                width: auto;
+            }
+
+
+            .zona-eliminar {
+                top: 10px;
+                right: 10px;
+            }
+
         }
+
     </style>
 
+
     <script>
+
         function toggleNuevo() {
-            const formDiv = document.getElementById("nuevoRegistro");
+
+            const formDiv =
+                document.getElementById("nuevoRegistro");
+
 
             if (!formDiv) {
                 return;
             }
 
-            if (formDiv.style.display === "none" || formDiv.style.display === "") {
+
+            if (
+                formDiv.style.display === "none" ||
+                formDiv.style.display === ""
+            ) {
+
                 formDiv.style.display = "block";
+
 
                 window.scrollTo({
                     top: formDiv.offsetTop - 10,
                     behavior: "smooth"
                 });
+
             } else {
+
                 formDiv.style.display = "none";
+
             }
+
         }
+
     </script>
+
 </head>
+
 
 <body>
 
-    <!-- ENCABEZADO -->
+
+    <!-- =====================================================
+         ENCABEZADO
+    ====================================================== -->
+
     <div class="header">
 
         <h1>
             Registro de Visitas - Grupo {{ grupo }}
         </h1>
 
+
         {% if rol == 'visitante' %}
 
-            <a href="/login">
-                <button type="button" class="btn-admin">
+            <a href="/login?grupo={{ grupo }}">
+
+                <button
+                    type="button"
+                    class="btn-admin"
+                >
                     Ingresar como administrador
                 </button>
+
             </a>
 
         {% else %}
 
-            <a href="/logout">
-                <button type="button" class="btn-logout">
+            <a href="/logout?grupo={{ grupo }}">
+
+                <button
+                    type="button"
+                    class="btn-logout"
+                >
                     Salir de administrador
                 </button>
+
             </a>
 
         {% endif %}
@@ -309,7 +443,10 @@
     </div>
 
 
-    <!-- MENSAJES DE FLASK -->
+    <!-- =====================================================
+         MENSAJES DE FLASK
+    ====================================================== -->
+
     {% with mensajes = get_flashed_messages() %}
 
         {% if mensajes %}
@@ -337,121 +474,162 @@
     {% endwith %}
 
 
-    <!-- BOTÓN PARA AGREGAR NUEVO REGISTRO -->
+    <!-- =====================================================
+         BOTÓN PARA AGREGAR NUEVO REGISTRO
+    ====================================================== -->
+
     <button
         type="button"
         class="toggle-btn"
-        onclick="toggleNuevo()">
-
+        onclick="toggleNuevo()"
+    >
         ➕ Agregar nuevo registro
-
     </button>
 
 
-    <!-- FORMULARIO PARA NUEVO REGISTRO -->
-    <div id="nuevoRegistro" class="nuevo">
+    <!-- =====================================================
+         FORMULARIO PARA NUEVO REGISTRO
+    ====================================================== -->
+
+    <div
+        id="nuevoRegistro"
+        class="nuevo"
+    >
 
         <h2>Agregar nuevo registro</h2>
 
-        <form action="/nuevo" method="POST">
+
+        <form
+            action="/nuevo"
+            method="POST"
+        >
 
             <input
                 type="hidden"
                 name="grupo"
-                value="{{ grupo }}">
+                value="{{ grupo }}"
+            >
+
 
             <div class="campo">
+
                 <strong>Identificador:</strong>
 
                 <input
                     type="text"
                     name="identificador"
                     required
-                    autocomplete="off">
+                    maxlength="10"
+                    autocomplete="off"
+                >
+
             </div>
 
 
             <div class="campo">
+
                 <strong>Nombre:</strong>
 
                 <input
                     type="text"
                     name="nombre"
-                    required>
+                    required
+                >
+
             </div>
 
 
             <div class="campo">
+
                 <strong>Dirección:</strong>
 
                 <input
                     type="text"
-                    name="direccion">
+                    name="direccion"
+                >
+
             </div>
 
 
             <div class="campo">
+
                 <strong>Teléfono:</strong>
 
                 <input
                     type="text"
                     name="telefono"
-                    inputmode="tel">
+                    inputmode="tel"
+                >
+
             </div>
 
 
             <div class="campo">
+
                 <strong>Variante:</strong>
 
                 <input
                     type="text"
-                    name="variante">
+                    name="variante"
+                >
+
             </div>
 
 
             <div class="campo">
+
                 <strong>Actualmente visita:</strong>
 
                 <input
                     type="text"
-                    name="actualmente_la_visita">
+                    name="actualmente_la_visita"
+                >
+
             </div>
 
 
             <div class="campo">
+
                 <strong>Fecha:</strong>
 
                 <input
                     type="date"
-                    name="fecha">
+                    name="fecha"
+                >
+
             </div>
 
 
             <div class="campo">
+
                 <strong>Observaciones:</strong>
 
                 <textarea
                     name="observaciones"
-                    rows="3"></textarea>
+                    rows="3"
+                ></textarea>
+
             </div>
 
 
             <div class="campo">
+
                 <strong>Ver en Maps:</strong>
 
                 <input
                     type="text"
                     name="ver_en_maps"
-                    placeholder="https://maps.google.com/...">
+                    placeholder="https://maps.google.com/..."
+                >
+
             </div>
 
 
             <button
                 type="submit"
-                class="btn-update">
-
+                class="btn-update"
+            >
                 Agregar
-
             </button>
 
         </form>
@@ -459,62 +637,134 @@
     </div>
 
 
-    <!-- LISTA DE PERSONAS -->
+    <!-- =====================================================
+         LISTA DE PERSONAS
+    ====================================================== -->
 
     {% if personas %}
 
         {% for persona in personas %}
 
             <div
-                class="ficha {% if resaltado == persona.identificador %}highlight{% endif %}">
+                class="ficha {% if resaltado == persona.identificador %}highlight{% endif %}"
+            >
 
-                <!-- DATOS DEL REGISTRO -->
+
+                <!-- =================================================
+                     ELIMINAR REGISTRO - ADMIN
+                ================================================== -->
+
+                {% if rol == 'admin' %}
+
+                    <div class="zona-eliminar">
+
+                        <form
+                            action="/eliminar"
+                            method="POST"
+                            onsubmit="return confirm('¿Está seguro de eliminar este registro?');"
+                        >
+
+                            <input
+                                type="hidden"
+                                name="identificador"
+                                value="{{ persona.identificador }}"
+                            >
+
+
+                            <input
+                                type="hidden"
+                                name="grupo"
+                                value="{{ grupo }}"
+                            >
+
+
+                            <button
+                                type="submit"
+                                class="btn-eliminar"
+                            >
+                                🗑️ Eliminar
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- =================================================
+                     DATOS DEL REGISTRO
+                ================================================== -->
 
                 <div class="campo">
+
                     <strong>Identificador:</strong>
+
                     {{ persona.identificador }}
+
                 </div>
 
 
                 <div class="campo">
+
                     <strong>Nombre:</strong>
+
                     {{ persona.nombre }}
+
                 </div>
 
 
                 <div class="campo">
+
                     <strong>Dirección:</strong>
+
                     {{ persona.direccion or 'No disponible' }}
+
                 </div>
 
 
                 <div class="campo">
+
                     <strong>Teléfono:</strong>
+
                     {{ persona.telefono or 'No disponible' }}
+
                 </div>
 
 
                 <div class="campo">
+
                     <strong>Variante:</strong>
+
                     {{ persona.variante or 'No disponible' }}
+
                 </div>
 
 
                 <div class="campo">
+
                     <strong>Actualmente visita:</strong>
+
                     {{ persona.actualmente_la_visita or 'No disponible' }}
+
                 </div>
 
 
                 <div class="campo">
+
                     <strong>Fecha registrada:</strong>
+
                     {{ persona.fecha or 'No disponible' }}
+
                 </div>
 
 
                 <div class="campo">
+
                     <strong>Fecha entregó:</strong>
+
                     {{ persona.entrego or 'No disponible' }}
+
                 </div>
 
 
@@ -522,15 +772,15 @@
 
                     <strong>Ver en Maps:</strong>
 
+
                     {% if persona.ver_en_maps %}
 
                         <a
                             href="{{ persona.ver_en_maps }}"
                             target="_blank"
-                            rel="noopener noreferrer">
-
+                            rel="noopener noreferrer"
+                        >
                             Presione aquí
-
                         </a>
 
                     {% else %}
@@ -553,149 +803,126 @@
                 </div>
 
 
-                <!-- ============================== -->
-                <!-- FORMULARIO DEL ADMINISTRADOR -->
-                <!-- ============================== -->
+                <!-- =================================================
+                     FORMULARIO DEL ADMINISTRADOR
+                ================================================== -->
 
                 {% if rol == 'admin' %}
 
                     <form
                         action="/editar"
                         method="POST"
-                        class="formulario-admin">
+                        class="formulario-admin"
+                    >
+
+                        <!-- Identificador original -->
 
                         <input
                             type="hidden"
-                            name="identificador"
-                            value="{{ persona.identificador }}">
+                            name="identificador_original"
+                            value="{{ persona.identificador }}"
+                        >
+
+
+                        <!-- Identificador editable -->
+
+                        <div class="campo">
+
+                            <strong>Identificador:</strong>
+
+                            <input
+                                type="text"
+                                name="identificador"
+                                value="{{ persona.identificador or '' }}"
+                                required
+                                maxlength="10"
+                            >
+
+                        </div>
+
 
                         <input
                             type="hidden"
                             name="grupo"
-                            value="{{ grupo }}">
+                            value="{{ grupo }}"
+                        >
 
 
                         <div class="campo">
+
                             <strong>Nombre:</strong>
 
                             <input
                                 type="text"
                                 name="nombre"
-                                value="{{ persona.nombre or '' }}">
+                                value="{{ persona.nombre or '' }}"
+                            >
+
                         </div>
 
 
                         <div class="campo">
+
                             <strong>Dirección:</strong>
 
                             <input
                                 type="text"
                                 name="direccion"
-                                value="{{ persona.direccion or '' }}">
+                                value="{{ persona.direccion or '' }}"
+                            >
+
                         </div>
 
 
                         <div class="campo">
+
                             <strong>Teléfono:</strong>
 
                             <input
                                 type="text"
                                 name="telefono"
                                 value="{{ persona.telefono or '' }}"
-                                inputmode="tel">
+                                inputmode="tel"
+                            >
+
                         </div>
 
 
                         <div class="campo">
+
                             <strong>Variante:</strong>
 
                             <input
                                 type="text"
                                 name="variante"
-                                value="{{ persona.variante or '' }}">
+                                value="{{ persona.variante or '' }}"
+                            >
+
                         </div>
 
 
                         <div class="campo">
+
                             <strong>Actualmente visita:</strong>
 
                             <input
                                 type="text"
                                 name="actualmente_la_visita"
-                                value="{{ persona.actualmente_la_visita or '' }}">
+                                value="{{ persona.actualmente_la_visita or '' }}"
+                            >
+
                         </div>
 
 
                         <div class="campo">
+
                             <strong>Fecha:</strong>
 
                             <input
                                 type="date"
                                 name="fecha"
-                                value="{{ persona.fecha or '' }}">
-                        </div>
-
-
-                        <div class="campo">
-                            <strong>Observaciones:</strong>
-
-                            <textarea
-                                name="observaciones"
-                                rows="4">{{ persona.observaciones or '' }}</textarea>
-                        </div>
-
-
-                        <div class="campo">
-                            <strong>Ver en Maps:</strong>
-
-                            <input
-                                type="text"
-                                name="ver_en_maps"
-                                value="{{ persona.ver_en_maps or '' }}">
-                        </div>
-
-
-                        <button
-                            type="submit"
-                            class="btn-update">
-
-                            Guardar cambios
-
-                        </button>
-
-                    </form>
-
-
-                {% else %}
-
-                    <!-- ============================== -->
-                    <!-- FORMULARIO DEL VISITANTE -->
-                    <!-- ============================== -->
-
-                    <form
-                        action="/actualizar"
-                        method="POST"
-                        class="formulario-visitante">
-
-                        <input
-                            type="hidden"
-                            name="identificador"
-                            value="{{ persona.identificador }}">
-
-                        <input
-                            type="hidden"
-                            name="grupo"
-                            value="{{ grupo }}">
-
-
-                        <div class="campo">
-
-                            <strong>Fecha de actualización:</strong>
-
-                            <input
-                                type="date"
-                                name="fecha"
-                                value="{{ persona.fecha or '' }}">
+                                value="{{ persona.fecha or '' }}"
+                            >
 
                         </div>
 
@@ -707,17 +934,92 @@
                             <textarea
                                 name="observaciones"
                                 rows="4"
-                                placeholder="Escriba aquí la información de la visita...">{{ persona.observaciones or '' }}</textarea>
+                            >{{ persona.observaciones or '' }}</textarea>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <strong>Ver en Maps:</strong>
+
+                            <input
+                                type="text"
+                                name="ver_en_maps"
+                                value="{{ persona.ver_en_maps or '' }}"
+                            >
 
                         </div>
 
 
                         <button
                             type="submit"
-                            class="btn-update">
+                            class="btn-update"
+                        >
+                            Guardar cambios
+                        </button>
 
+                    </form>
+
+
+                {% else %}
+
+
+                    <!-- =================================================
+                         FORMULARIO DEL VISITANTE
+                    ================================================== -->
+
+                    <form
+                        action="/actualizar"
+                        method="POST"
+                        class="formulario-visitante"
+                    >
+
+                        <input
+                            type="hidden"
+                            name="identificador"
+                            value="{{ persona.identificador }}"
+                        >
+
+
+                        <input
+                            type="hidden"
+                            name="grupo"
+                            value="{{ grupo }}"
+                        >
+
+
+                        <div class="campo">
+
+                            <strong>Fecha de actualización:</strong>
+
+                            <input
+                                type="date"
+                                name="fecha"
+                                value="{{ persona.fecha or '' }}"
+                            >
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <strong>Observaciones:</strong>
+
+                            <textarea
+                                name="observaciones"
+                                rows="4"
+                                placeholder="Escriba aquí la información de la visita..."
+                            >{{ persona.observaciones or '' }}</textarea>
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="btn-update"
+                        >
                             Actualizar visita
-
                         </button>
 
                     </form>
@@ -728,14 +1030,17 @@
 
         {% endfor %}
 
+
     {% else %}
 
         <div class="sin-registros">
+
             No hay registros disponibles para este grupo.
+
         </div>
 
     {% endif %}
 
+
 </body>
 </html>
-

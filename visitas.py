@@ -3,9 +3,12 @@ import os
 import psycopg2
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
+
 DATABASE_URL = os.getenv("DATABASE_URL")
+
 
 if not DATABASE_URL:
     raise ValueError(
@@ -136,26 +139,70 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 
+    # =====================================================
+    # CONSERVAR EL GRUPO ACTUAL
+    # =====================================================
+
+    if request.method == 'POST':
+
+        grupo = request.form.get(
+            'grupo',
+            'QA'
+        ).strip()
+
+    else:
+
+        grupo = request.args.get(
+            'grupo',
+            'QA'
+        ).strip()
+
+
+    if not grupo:
+        grupo = 'QA'
+
+
+    # =====================================================
+    # PROCESAR LOGIN
+    # =====================================================
+
     if request.method == 'POST':
 
         usuario = request.form['usuario']
         clave = request.form['clave']
 
+
         if usuario == "LaEra" and clave == "8824":
 
             session['rol'] = 'admin'
 
-            flash("✅ Has ingresado como administrador")
+            flash(
+                "✅ Hola Noikni haz ingresado "
+                "como administrador"
+            )
 
-            return redirect('/')
+            # Regresar al mismo grupo desde donde
+            # se inició sesión.
+            return redirect(
+                f"/?grupo={grupo}"
+            )
+
 
         else:
 
-            flash("⚠️ Credenciales incorrectas")
+            flash("Credenciales incorrectas")
 
-            return redirect('/login')
+            # Si las credenciales son incorrectas,
+            # también conservamos el grupo.
+            return redirect(
+                f"/login?grupo={grupo}"
+            )
 
-    return render_template('login.html')
+
+    return render_template(
+        'login.html',
+        grupo=grupo
+    )
 
 
 # =========================================================
@@ -165,11 +212,21 @@ def login():
 @app.route('/logout')
 def logout():
 
+    # Conservamos el grupo actual al salir.
+    grupo = request.args.get(
+        'grupo',
+        'QA'
+    ).strip()
+
+
     session.pop('rol', None)
 
     flash("Has salido del modo administrador")
 
-    return redirect('/')
+
+    return redirect(
+        f"/?grupo={grupo}"
+    )
 
 
 # =========================================================
@@ -179,13 +236,24 @@ def logout():
 @app.route('/actualizar', methods=['POST'])
 def actualizar():
 
-    identificador = request.form.get('identificador', '').strip()
+    identificador = request.form.get(
+        'identificador',
+        ''
+    ).strip()
 
-    nueva_obs = request.form.get('observaciones', '').strip()
+    nueva_obs = request.form.get(
+        'observaciones',
+        ''
+    ).strip()
 
-    nueva_fecha = request.form.get('fecha') or None
+    nueva_fecha = request.form.get(
+        'fecha'
+    ) or None
 
-    grupo = request.form.get('grupo', '').strip()
+    grupo = request.form.get(
+        'grupo',
+        ''
+    ).strip()
 
 
     # La fecha es obligatoria para actualizar una visita
@@ -238,7 +306,7 @@ def actualizar():
         if filas_afectadas > 0:
 
             flash(
-                f"✅ Registro {identificador} "
+                f"✅ cualtitok noikni, Registro {identificador} "
                 f"actualizado correctamente"
             )
 
@@ -278,44 +346,52 @@ def actualizar():
 def nuevo():
 
     identificador = request.form.get(
-        'identificador', ''
+        'identificador',
+        ''
     ).strip()
 
     nombre = request.form.get(
-        'nombre', ''
+        'nombre',
+        ''
     ).strip()
 
     direccion = request.form.get(
-        'direccion', ''
+        'direccion',
+        ''
     ).strip()
 
     telefono = request.form.get(
-        'telefono', ''
+        'telefono',
+        ''
     ).strip()
 
     variante = request.form.get(
-        'variante', ''
+        'variante',
+        ''
     ).strip()
 
     actualmente = request.form.get(
-        'actualmente_la_visita', ''
+        'actualmente_la_visita',
+        ''
     ).strip()
 
     observaciones = request.form.get(
-        'observaciones', ''
+        'observaciones',
+        ''
     ).strip()
 
-    # IMPORTANTE:
-    # Si el usuario deja la fecha vacía,
-    # se convierte en None para PostgreSQL.
-    fecha = request.form.get('fecha') or None
+    fecha = request.form.get(
+        'fecha'
+    ) or None
 
     ver_en_maps = request.form.get(
-        'ver_en_maps', ''
+        'ver_en_maps',
+        ''
     ).strip()
 
     grupo = request.form.get(
-        'grupo', ''
+        'grupo',
+        ''
     ).strip()
 
 
@@ -398,45 +474,104 @@ def nuevo():
 @app.route('/editar', methods=['POST'])
 def editar():
 
-    identificador = request.form.get(
-        'identificador', ''
+    identificador_original = request.form.get(
+        'identificador_original',
+        ''
+    ).strip()
+
+    nuevo_identificador = request.form.get(
+        'identificador',
+        ''
     ).strip()
 
     grupo = request.form.get(
-        'grupo', ''
+        'grupo',
+        ''
     ).strip()
 
     nombre = request.form.get(
-        'nombre', ''
+        'nombre',
+        ''
     ).strip()
 
     direccion = request.form.get(
-        'direccion', ''
+        'direccion',
+        ''
     ).strip()
 
     telefono = request.form.get(
-        'telefono', ''
+        'telefono',
+        ''
     ).strip()
 
     variante = request.form.get(
-        'variante', ''
+        'variante',
+        ''
     ).strip()
 
     actualmente = request.form.get(
-        'actualmente_la_visita', ''
+        'actualmente_la_visita',
+        ''
     ).strip()
 
-    # Igual que en /nuevo:
-    # fecha vacía -> None -> NULL en PostgreSQL
-    fecha = request.form.get('fecha') or None
+    fecha = request.form.get(
+        'fecha'
+    ) or None
 
     observaciones = request.form.get(
-        'observaciones', ''
+        'observaciones',
+        ''
     ).strip()
 
     ver_en_maps = request.form.get(
-        'ver_en_maps', ''
+        'ver_en_maps',
+        ''
     ).strip()
+
+
+    # =====================================================
+    # VALIDAR IDENTIFICADOR ORIGINAL
+    # =====================================================
+
+    if not identificador_original:
+
+        flash(
+            "⚠️ No se recibió el identificador original "
+            "del registro."
+        )
+
+        return redirect(
+            f"/?grupo={grupo}"
+        )
+
+
+    # =====================================================
+    # VALIDAR NUEVO IDENTIFICADOR
+    # =====================================================
+
+    if not nuevo_identificador:
+
+        flash(
+            "⚠️ El identificador no puede estar vacío."
+        )
+
+        return redirect(
+            f"/?grupo={grupo}"
+            f"&resaltado={identificador_original}"
+        )
+
+
+    if len(nuevo_identificador) > 10:
+
+        flash(
+            "⚠️ El identificador no puede tener más de "
+            "10 caracteres."
+        )
+
+        return redirect(
+            f"/?grupo={grupo}"
+            f"&resaltado={identificador_original}"
+        )
 
 
     conn = get_connection()
@@ -445,10 +580,49 @@ def editar():
 
     try:
 
+        # =================================================
+        # COMPROBAR SI EL NUEVO IDENTIFICADOR YA EXISTE
+        # =================================================
+
+        cur.execute("""
+            SELECT 1
+            FROM visitas
+            WHERE identificador = %s
+              AND identificador <> %s;
+        """, (
+            nuevo_identificador,
+            identificador_original
+        ))
+
+
+        registro_existente = cur.fetchone()
+
+
+        if registro_existente:
+
+            flash(
+                f"⚠️ El identificador "
+                f"{nuevo_identificador} ya existe. "
+                f"No se puede utilizar."
+            )
+
+            conn.rollback()
+
+            return redirect(
+                f"/?grupo={grupo}"
+                f"&resaltado={identificador_original}"
+            )
+
+
+        # =================================================
+        # ACTUALIZAR REGISTRO
+        # =================================================
+
         cur.execute("""
             UPDATE visitas
 
             SET
+                identificador = %s,
                 nombre = %s,
                 direccion = %s,
                 telefono = %s,
@@ -460,6 +634,7 @@ def editar():
 
             WHERE identificador = %s;
         """, (
+            nuevo_identificador,
             nombre,
             direccion,
             telefono,
@@ -468,17 +643,43 @@ def editar():
             fecha,
             observaciones,
             ver_en_maps,
-            identificador
+            identificador_original
         ))
 
+
+        filas_afectadas = cur.rowcount
 
         conn.commit()
 
 
-        flash(
-            f"✅ Registro {identificador} "
-            f"editado correctamente"
-        )
+        # =================================================
+        # RESULTADO
+        # =================================================
+
+        if filas_afectadas > 0:
+
+            if identificador_original != nuevo_identificador:
+
+                flash(
+                    f"✅ Registro {identificador_original} "
+                    f"cambiado a {nuevo_identificador} "
+                    f"y editado correctamente."
+                )
+
+            else:
+
+                flash(
+                    f"✅ cualtitok noikni, Registro "
+                    f"{nuevo_identificador} "
+                    f"editado correctamente."
+                )
+
+        else:
+
+            flash(
+                f"⚠️ No se encontró el registro "
+                f"{identificador_original}"
+            )
 
 
     except Exception as e:
@@ -497,7 +698,97 @@ def editar():
 
 
     return redirect(
-        f"/?grupo={grupo}&resaltado={identificador}"
+        f"/?grupo={grupo}"
+        f"&resaltado={nuevo_identificador}"
+    )
+
+
+# =========================================================
+# ELIMINAR REGISTRO COMO ADMINISTRADOR
+# =========================================================
+
+@app.route('/eliminar', methods=['POST'])
+def eliminar():
+
+    # Verificar que realmente sea administrador
+    if session.get('rol') != 'admin':
+
+        flash(
+            "⚠️ No tienes permisos para eliminar registros"
+        )
+
+        grupo = request.form.get(
+            'grupo',
+            'QA'
+        ).strip()
+
+        return redirect(
+            f"/?grupo={grupo}"
+        )
+
+
+    identificador = request.form.get(
+        'identificador',
+        ''
+    ).strip()
+
+    grupo = request.form.get(
+        'grupo',
+        ''
+    ).strip()
+
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+
+    try:
+
+        cur.execute("""
+            DELETE FROM visitas
+            WHERE identificador = %s;
+        """, (
+            identificador,
+        ))
+
+
+        filas_afectadas = cur.rowcount
+
+        conn.commit()
+
+
+        if filas_afectadas > 0:
+
+            flash(
+                f"✅ Registro {identificador} "
+                f"eliminado correctamente"
+            )
+
+        else:
+
+            flash(
+                f"⚠️ No se encontró el registro "
+                f"{identificador}"
+            )
+
+
+    except Exception as e:
+
+        conn.rollback()
+
+        flash(
+            f"⚠️ Error al eliminar el registro: {e}"
+        )
+
+
+    finally:
+
+        cur.close()
+        conn.close()
+
+
+    return redirect(
+        f"/?grupo={grupo}"
     )
 
 
@@ -510,4 +801,3 @@ if __name__ == '__main__':
     crear_tabla_si_no_existe()
 
     app.run(debug=True)
-
